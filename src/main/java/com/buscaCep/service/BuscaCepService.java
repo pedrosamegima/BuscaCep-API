@@ -1,5 +1,7 @@
 package com.buscaCep.service;
 
+import java.time.Duration;
+
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -28,6 +30,7 @@ public class BuscaCepService {
 			            .onStatus(HttpStatusCode::is5xxServerError,
 			                response -> Mono.error(new RuntimeException("Erro na API externa")))
 				  .bodyToMono(BuscaCep.class)
+				  .timeout(Duration.ofSeconds(5)) // controla o timeout
 			        .map(buscaCep -> new BuscaCepResponse(
 			            buscaCep.getCep(),
 			            buscaCep.getState(),
